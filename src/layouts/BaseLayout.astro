@@ -1,0 +1,75 @@
+---
+import '@fontsource/geist-sans/400.css';
+import '@fontsource/geist-sans/600.css';
+import '@fontsource/geist-mono/400.css';
+import '../styles/global.css';
+import { site } from '../site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonicalPath?: string;
+  type?: 'website' | 'article';
+  indexable?: boolean;
+}
+
+const {
+  title = site.title,
+  description = site.description,
+  canonicalPath = Astro.url.pathname,
+  type = 'website',
+  indexable = true,
+} = Astro.props;
+const pageTitle = title === site.title ? title : `${title} · ${site.title}`;
+const canonical = new URL(canonicalPath, site.url).toString();
+const image = new URL('/og-default.png', site.url).toString();
+---
+
+<!doctype html>
+<html lang={site.language}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f8f8f6" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    {indexable ? <link rel="canonical" href={canonical} /> : <meta name="robots" content="noindex" />}
+    <link rel="alternate" type="application/rss+xml" title={`${site.title} RSS`} href="/rss.xml" />
+    <link rel="sitemap" href="/sitemap.xml" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={site.title} />
+    <meta property="og:locale" content="ko_KR" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={image} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">본문으로 건너뛰기</a>
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="site-header-inner">
+          <a class="brand" href="/" aria-label="miel.ing 홈">
+            <span class="brand-mark" aria-hidden="true">m.</span>
+            <span>miel.ing</span>
+          </a>
+          <nav class="site-nav" aria-label="주 메뉴">
+            <a href="/">글</a>
+            <a href="/tags/">태그</a>
+            <a href="/rss.xml">RSS <span aria-hidden="true">↗</span></a>
+          </nav>
+        </div>
+      </header>
+      <main id="main">
+        <slot />
+      </main>
+      <footer class="site-footer">
+        <div class="site-footer-inner">
+          <span>© {new Date().getFullYear()} miel.ing</span>
+          <span>Markdown에서 HTML로, 오래 읽을 수 있도록.</span>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

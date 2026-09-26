@@ -1,0 +1,55 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { formatDate, getPublishedPosts, postUrl, tagUrl, type Post } from '../../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  return posts.flatMap((post) => [
+    { params: { postId: post.data.postId, slug: post.data.slug }, props: { post, isAlias: false } },
+    ...post.data.aliases.map((slug) => ({
+      params: { postId: post.data.postId, slug },
+      props: { post, isAlias: true },
+    })),
+  ]);
+}
+
+const { post, isAlias } = Astro.props as { post: Post; isAlias: boolean };
+if (isAlias) return Astro.redirect(postUrl(post.data), 301);
+
+const { Content } = await render(post);
+---
+
+<BaseLayout
+  title={post.data.title}
+  description={post.data.description}
+  canonicalPath={postUrl(post.data)}
+  type="article"
+>
+  <div class="article-container">
+    <a class="back-link" href="/"><span aria-hidden="true">←</span> 모든 글</a>
+    <article>
+      <header class="article-header">
+        <div class="article-label">ARTICLE <span aria-hidden="true">/</span> {post.data.postId}</div>
+        <h1>{post.data.title}</h1>
+        <p class="article-description">{post.data.description}</p>
+        <div class="article-meta">
+          <span>게시 <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time></span>
+          {post.data.updatedAt && (
+            <span>수정 <time datetime={post.data.updatedAt.toISOString()}>{formatDate(post.data.updatedAt)}</time></span>
+          )}
+        </div>
+        {post.data.tags.length > 0 && (
+          <div class="article-tags" aria-label="글 태그">
+            {post.data.tags.map((tag) => <a class="tag-chip" href={tagUrl(tag)}>{tag}</a>)}
+          </div>
+        )}
+      </header>
+      <div class="prose">
+        <Content />
+      </div>
+    </article>
+    <div class="article-end" aria-hidden="true">✳</div>
+    <a class="back-link article-back" href="/"><span aria-hidden="true">←</span> 모든 글로 돌아가기</a>
+  </div>
+</BaseLayout>

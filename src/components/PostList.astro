@@ -1,0 +1,33 @@
+---
+import type { Post } from '../lib/posts';
+import { formatDate, postUrl, tagUrl } from '../lib/posts';
+
+interface Props {
+  posts: Post[];
+}
+
+const { posts } = Astro.props;
+---
+
+<ul class="post-list">
+  {posts.map((post) => (
+    <li class="post-card">
+      <article>
+        <div class="post-card-meta">
+          <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
+          {post.data.tags.length > 0 && <span aria-hidden="true">·</span>}
+          {post.data.tags.map((tag, index) => (
+            <span class="post-card-tag">
+              <a href={tagUrl(tag)}>{tag}</a>{index < post.data.tags.length - 1 ? ',' : ''}
+            </span>
+          ))}
+        </div>
+        <h2><a href={postUrl(post.data)}>{post.data.title}</a></h2>
+        <p>{post.data.description}</p>
+        <a class="post-card-read" href={postUrl(post.data)} aria-label={`${post.data.title} 읽기`}>
+          글 읽기 <span aria-hidden="true">↗</span>
+        </a>
+      </article>
+    </li>
+  ))}
+</ul>

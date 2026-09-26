@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostList from '../../components/PostList.astro';
+import { getPublishedPosts, groupTags, type TagGroup } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const groups = groupTags(await getPublishedPosts());
+  return groups.map((group) => ({ params: { tag: group.slug }, props: { group } }));
+}
+
+const { group } = Astro.props as { group: TagGroup };
+---
+
+<BaseLayout
+  title={`${group.label} 글`}
+  description={`${group.label} 주제로 작성한 글 목록.`}
+  canonicalPath={`/tags/${encodeURIComponent(group.slug)}/`}
+>
+  <div class="page-container inner-page">
+    <a class="back-link" href="/tags/"><span aria-hidden="true">←</span> 모든 태그</a>
+    <div class="eyebrow"><span class="eyebrow-dot"></span> TOPIC</div>
+    <h1>{group.label}</h1>
+    <p class="page-lead">{group.posts.length}개의 글</p>
+    <PostList posts={group.posts} />
+  </div>
+</BaseLayout>

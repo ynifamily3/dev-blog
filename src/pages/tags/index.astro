@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPublishedPosts, groupTags, tagUrl } from '../../lib/posts';
+
+const tags = groupTags(await getPublishedPosts());
+---
+
+<BaseLayout title="태그" description="주제별로 개발 글을 찾아봅니다." canonicalPath="/tags/">
+  <div class="page-container inner-page">
+    <div class="eyebrow"><span class="eyebrow-dot"></span> TOPICS</div>
+    <h1>태그</h1>
+    <p class="page-lead">관심 있는 주제에서 글을 찾아보세요.</p>
+    {tags.length > 0 ? (
+      <div class="tag-index">
+        {tags.map(({ label, posts }) => (
+          <a href={tagUrl(label)}>
+            <span>{label}</span>
+            <span>{posts.length} <span aria-hidden="true">↗</span></span>
+          </a>
+        ))}
+      </div>
+    ) : (
+      <div class="empty-state">
+        <span class="empty-state-icon" aria-hidden="true">✳</span>
+        <h2>아직 태그가 없습니다.</h2>
+        <p>글이 발행되면 주제별로 정리됩니다.</p>
+      </div>
+    )}
+  </div>
+</BaseLayout>

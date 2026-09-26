@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#f8f8f6"/>
+  <path d="M72 75H1128M72 555H1128" stroke="#dedfdb" stroke-width="2"/>
+  <rect x="72" y="130" width="80" height="80" rx="17" fill="#1a1b1e"/>
+  <text x="89" y="188" fill="#f8f8f6" font-family="sans-serif" font-size="54" font-weight="700" letter-spacing="-7">m.</text>
+  <text x="72" y="325" fill="#1a1b1e" font-family="sans-serif" font-size="92" font-weight="700" letter-spacing="-7">miel.ing</text>
+  <text x="76" y="388" fill="#62646b" font-family="sans-serif" font-size="29">Development notes &amp; documentation</text>
+  <text x="73" y="525" fill="#336a55" font-family="monospace" font-size="19" letter-spacing="3">CONTENT IS STATIC. INTERACTION IS PROGRESSIVE.</text>
+</svg>
