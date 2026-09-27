@@ -208,6 +208,23 @@ function transformHtml(node) {
 
     transformHtml(child);
   }
+
+  node.children = node.children.map((child) => {
+    if (child.tagName !== 'table') return child;
+
+    const head = child.children?.find((section) => section.tagName === 'thead');
+    if (head) {
+      visit(head, (cell) => {
+        if (cell.tagName === 'th') cell.properties = { ...cell.properties, scope: 'col' };
+      });
+    }
+
+    return {
+      type: 'element', tagName: 'div',
+      properties: { className: ['table-scroll'], role: 'region', ariaLabel: '좌우로 스크롤할 수 있는 표', tabIndex: 0 },
+      children: [child],
+    };
+  });
 }
 
 function visit(node, callback) {
