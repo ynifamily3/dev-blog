@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" rx="28" fill="#eef2ed"/>
+  <path d="M80 90h1040M80 540h1040" stroke="#cbd6cc" stroke-width="2"/>
+  <text x="82" y="66" font-family="sans-serif" font-size="22" fill="#336a55" letter-spacing="3">DOCUMENT PIPELINE</text>
+  <g font-family="sans-serif" text-anchor="middle">
+    <rect x="90" y="188" width="250" height="208" rx="18" fill="#fff" stroke="#d5dfd5" stroke-width="2"/>
+    <text x="215" y="270" font-size="42" font-weight="700" fill="#1a1b1e">Markdown</text>
+    <text x="215" y="317" font-size="22" fill="#62646b">source</text>
+    <rect x="475" y="188" width="250" height="208" rx="18" fill="#fff" stroke="#d5dfd5" stroke-width="2"/>
+    <text x="600" y="270" font-size="42" font-weight="700" fill="#1a1b1e">Build</text>
+    <text x="600" y="317" font-size="22" fill="#62646b">transform</text>
+    <rect x="860" y="188" width="250" height="208" rx="18" fill="#fff" stroke="#d5dfd5" stroke-width="2"/>
+    <text x="985" y="270" font-size="42" font-weight="700" fill="#1a1b1e">HTML</text>
+    <text x="985" y="317" font-size="22" fill="#62646b">read</text>
+  </g>
+  <path d="M365 292h76m-16-15 16 15-16 15M750 292h76m-16-15 16 15-16 15" stroke="#336a55" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <text x="82" y="510" font-family="monospace" font-size="22" fill="#336a55">CONTENT → BUILD → STATIC DOCUMENT</text>
+</svg>

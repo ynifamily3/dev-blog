@@ -17,7 +17,12 @@ export async function getStaticPaths() {
 const { post, isAlias } = Astro.props as { post: Post; isAlias: boolean };
 if (isAlias) return Astro.redirect(postUrl(post.data), 301);
 
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+const toc = headings.filter(({ depth, slug }) => (depth === 2 || depth === 3) && slug !== 'footnote-label');
+const publishedPosts = await getPublishedPosts();
+const currentIndex = publishedPosts.findIndex(({ data }) => data.postId === post.data.postId);
+const olderPost = publishedPosts[currentIndex + 1];
+const newerPost = publishedPosts[currentIndex - 1];
 ---
 
 <BaseLayout
@@ -45,11 +50,39 @@ const { Content } = await render(post);
           </div>
         )}
       </header>
+      {toc.length > 0 && (
+        <nav class="article-toc" aria-label="이 글의 목차">
+          <p class="article-toc-title">목차 <span>{toc.length.toString().padStart(2, '0')}</span></p>
+          <ol>
+            {toc.map((heading) => (
+              <li class:list={{ 'toc-subheading': heading.depth === 3 }}>
+                <a href={`#${heading.slug}`}>{heading.text}</a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )}
       <div class="prose">
         <Content />
       </div>
     </article>
     <div class="article-end" aria-hidden="true">✳</div>
+    {(olderPost || newerPost) && (
+      <nav class="article-neighbors" aria-label="이전 글과 다음 글">
+        {olderPost ? (
+          <a href={postUrl(olderPost.data)}>
+            <span>← 이전 글</span>
+            <strong>{olderPost.data.title}</strong>
+          </a>
+        ) : <span></span>}
+        {newerPost ? (
+          <a href={postUrl(newerPost.data)}>
+            <span>다음 글 →</span>
+            <strong>{newerPost.data.title}</strong>
+          </a>
+        ) : <span></span>}
+      </nav>
+    )}
     <a class="back-link article-back" href="/"><span aria-hidden="true">←</span> 모든 글로 돌아가기</a>
   </div>
 </BaseLayout>

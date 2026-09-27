@@ -14,7 +14,7 @@ function escapeXml(value: string): string {
 
 export const GET: APIRoute = async () => {
   const posts = await getPublishedPosts();
-  const paths = ['/', '/tags/', ...groupTags(posts).map(({ label }) => tagUrl(label))];
+  const paths = ['/', '/archive/', '/tags/', ...groupTags(posts).map(({ label }) => tagUrl(label))];
   const entries: { path: string; lastmod?: string }[] = [
     ...paths.map((path) => ({ path })),
     ...posts.map(({ data }) => ({

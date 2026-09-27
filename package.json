@@ -4,18 +4,23 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && npm run verify:build",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "verify:build": "node scripts/verify-build.mjs"
   },
   "dependencies": {
+    "@astrojs/markdown-remark": "^7.3.1",
     "@astrojs/rss": "^4.0.19",
     "@fontsource/geist-mono": "^5.3.0",
     "@fontsource/geist-sans": "^5.3.0",
-    "astro": "^7.3.5"
+    "astro": "^7.3.5",
+    "remark-directive": "^4.0.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@mermaid-js/mermaid-cli": "^11.17.0",
+    "sharp": "^0.35.4",
     "typescript": "^6.0.3"
   }
 }

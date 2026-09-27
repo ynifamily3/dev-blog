@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { formatDate, getPublishedPosts, postUrl, type Post } from '../../lib/posts';
+
+const posts = await getPublishedPosts();
+const years = new Map<number, Post[]>();
+for (const post of posts) {
+  const year = post.data.publishedAt.getUTCFullYear();
+  const group = years.get(year) ?? [];
+  group.push(post);
+  years.set(year, group);
+}
+---
+
+<BaseLayout title="아카이브" description="발행한 글을 날짜순으로 살펴봅니다." canonicalPath="/archive/">
+  <div class="page-container inner-page">
+    <div class="eyebrow"><span class="eyebrow-dot"></span> ARCHIVE</div>
+    <h1>아카이브</h1>
+    <p class="page-lead">발행한 글을 날짜순으로 살펴봅니다.</p>
+    {years.size > 0 ? (
+      [...years].map(([year, group]) => (
+        <section class="archive-year" aria-labelledby={`year-${year}`}>
+          <h2 id={`year-${year}`}>{year}</h2>
+          <ol>
+            {group.map((post) => (
+              <li>
+                <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
+                <a href={postUrl(post.data)}>{post.data.title}</a>
+              </li>
+            ))}
+          </ol>
+        </section>
+      ))
+    ) : (
+      <div class="empty-state">
+        <span class="empty-state-icon" aria-hidden="true">✳</span>
+        <h2>아직 발행한 글이 없습니다.</h2>
+        <p>첫 글이 발행되면 이곳에 기록됩니다.</p>
+      </div>
+    )}
+  </div>
+</BaseLayout>
