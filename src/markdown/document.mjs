@@ -210,6 +210,73 @@ function transformHtml(node) {
   }
 }
 
+function visit(node, callback) {
+  callback(node);
+  for (const child of node.children ?? []) visit(child, callback);
+}
+
+function footnoteText(node) {
+  if (node.properties && (Object.hasOwn(node.properties, 'dataFootnoteBackref') || Object.hasOwn(node.properties, 'data-footnote-backref'))) return '';
+  if (node.properties?.ariaHidden === 'true') return '';
+  if (node.type === 'text') return node.value;
+  const content = (node.children ?? []).map(footnoteText).join('');
+  return ['p', 'li', 'blockquote', 'pre'].includes(node.tagName) ? `${content} ` : content;
+}
+
+function addFootnotePreviews(tree) {
+  const notes = new Map();
+  visit(tree, (node) => {
+    if (node.tagName === 'li' && String(node.properties?.id ?? '').startsWith('user-content-fn-')) {
+      notes.set(node.properties.id, footnoteText(node).replace(/\s+/g, ' ').trim());
+    }
+  });
+
+  let hasPreviews = false;
+  function addToChildren(parent) {
+    if (!Array.isArray(parent.children)) return;
+    const children = [];
+    for (const child of parent.children) {
+      children.push(child);
+      const ref = child.tagName === 'sup' && child.children?.find((node) =>
+        node.tagName === 'a' && node.properties && (Object.hasOwn(node.properties, 'dataFootnoteRef') || Object.hasOwn(node.properties, 'data-footnote-ref')));
+      const noteId = ref?.properties?.href?.slice(1);
+      let decodedId = noteId;
+      try { decodedId = decodeURIComponent(noteId ?? ''); } catch { /* Keep the original fragment. */ }
+      const note = notes.get(noteId) ?? notes.get(decodedId);
+      if (note && ref.properties.id) {
+        const previewId = `footnote-preview-${ref.properties.id}`;
+        const characters = Array.from(note);
+        const excerpt = characters.length > 320 ? `${characters.slice(0, 319).join('').trimEnd()}…` : note;
+        ref.properties.interestfor = previewId;
+        const describedBy = ref.properties.ariaDescribedBy ?? ref.properties['aria-describedby'] ?? 'footnote-label';
+        delete ref.properties['aria-describedby'];
+        ref.properties.ariaDescribedBy = `${Array.isArray(describedBy) ? describedBy.join(' ') : describedBy} ${previewId}`;
+        children.push({
+          type: 'element', tagName: 'span',
+          properties: { id: previewId, popover: 'hint', role: 'tooltip', className: ['footnote-preview'] },
+          children: [
+            { type: 'element', tagName: 'span', properties: { className: ['footnote-preview-label'] }, children: [{ type: 'text', value: `각주 ${plainText(ref)}` }] },
+            { type: 'element', tagName: 'span', properties: { className: ['footnote-preview-text'] }, children: [{ type: 'text', value: excerpt }] },
+          ],
+        });
+        hasPreviews = true;
+      }
+      addToChildren(child);
+    }
+    parent.children = children;
+  }
+  addToChildren(tree);
+  if (hasPreviews) {
+    tree.children.push({
+      type: 'element', tagName: 'script',
+      properties: { src: '/scripts/footnote-previews.js', defer: true }, children: [],
+    });
+  }
+}
+
 export function rehypeDocument() {
-  return transformHtml;
+  return (tree) => {
+    transformHtml(tree);
+    addFootnotePreviews(tree);
+  };
 }
