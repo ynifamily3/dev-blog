@@ -20,6 +20,8 @@ for (const [name, pattern] of Object.entries({
   '각주 미리보기': /interestfor="footnote-preview-user-content-fnref-footnote"[^>]*>1<\/a><\/sup><span id="footnote-preview-user-content-fnref-footnote" popover="hint" role="tooltip"/,
   '반응형 이미지': /<picture><source type="image\/avif"[^>]+><source type="image\/webp"/,
   '고정 이미지 크기': /<img[^>]+width="1200" height="630"/,
+  '브라우저 기본 재생 컨트롤': /<figure class="document-figure video-figure" style="--video-width:600px;--video-ratio:600 \/ 582"><video controls playsinline preload="none" width="600" height="582" aria-label="Geist 글꼴 소개 영상">/,
+  '비디오 샘플 자산': /<source src="https:\/\/k2mkucxia43oc7fa\.public\.blob\.vercel-storage\.com\/front\/geist-font-page\/videos\/dark\/geist\.mp4" type="video\/mp4">/,
   '정적 다이어그램': /<figure class="document-figure diagram-figure"><img src="\/generated\/mermaid\/[a-f0-9]+\.svg"/,
   '이전 글': /aria-label="이전 글과 다음 글"/,
 })) {

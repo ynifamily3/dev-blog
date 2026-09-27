@@ -1,7 +1,7 @@
 ---
 postId: document-showcase
 title: 문서 표현 실험실
-description: 제목, 코드, 표, 그림, 다이어그램, 각주 등 블로그의 문서 요소를 한 페이지에서 확인하는 실험용 글.
+description: 제목, 코드, 표, 그림, 비디오, 다이어그램, 각주 등 블로그의 문서 요소를 한 페이지에서 확인하는 실험용 글.
 slug: all-document-elements
 aliases: [all-elements]
 publishedAt: 2026-09-27
@@ -118,6 +118,14 @@ Markdown → HTML → Browser
 그림 번호나 부연 설명이 필요할 때는 figure를 사용한다. 아래 그림은 AVIF와 WebP 후보, 원본 대체 이미지, 고정된 가로·세로 크기를 가진다.
 
 ::figure{src="./assets/document-flow.png" alt="Markdown, Build, HTML이 차례로 연결된 문서 생성 흐름" caption="그림 1. 원본에서 정적 문서까지의 흐름"}
+
+## 비디오
+
+아래 영상은 재생 컨트롤, 비디오 비율, 좁은 화면에서의 배치를 확인하는 샘플이다. 영상의 사전 로드는 최소화한다.
+
+::video{src="https://k2mkucxia43oc7fa.public.blob.vercel-storage.com/front/geist-font-page/videos/dark/geist.mp4" title="Geist 글꼴 소개 영상" width=600 height=582 caption="Geist 글꼴 소개 영상 · Vercel 제공"}
+
+영상 출처: [Geist Video 예시](https://vercel.com/geist/video). 비디오가 재생되지 않아도 다른 문서 내용은 그대로 읽을 수 있다.
 
 ## 다이어그램
 

@@ -115,6 +115,21 @@ async function renderFigure(node, file) {
   return `<figure class="document-figure"><picture>${sources.join('')}<img src="/generated/images/${sourceName}" alt="${escapeHtml(alt)}" width="${metadata.width}" height="${metadata.height}" loading="lazy" decoding="async"></picture>${caption ? `<figcaption>${escapeHtml(caption)}</figcaption>` : ''}</figure>`;
 }
 
+function renderVideo(node, file) {
+  const { src, title, caption, width, height } = node.attributes ?? {};
+  const dimensions = [width, height].map(Number);
+  if (!src || !title || !dimensions.every((value) => Number.isSafeInteger(value) && value > 0)) {
+    throw new Error(`${file.path}: video에는 src, title, 양의 정수 width와 height가 필요합니다.`);
+  }
+  const isPublicPath = src.startsWith('/') && !src.startsWith('//');
+  const isHttpsUrl = URL.canParse(src) && new URL(src).protocol === 'https:';
+  if ((!isPublicPath && !isHttpsUrl) || !src.split('?')[0].endsWith('.mp4')) {
+    throw new Error(`${file.path}: video src는 HTTPS MP4 URL 또는 public MP4 경로여야 합니다.`);
+  }
+  const source = escapeHtml(src);
+  return `<figure class="document-figure video-figure" style="--video-width:${dimensions[0]}px;--video-ratio:${dimensions[0]} / ${dimensions[1]}"><video controls playsinline preload="none" width="${dimensions[0]}" height="${dimensions[1]}" aria-label="${escapeHtml(title)}"><source src="${source}" type="video/mp4">이 브라우저에서 영상을 재생할 수 없습니다. <a href="${source}">영상 파일 열기</a></video>${caption ? `<figcaption>${escapeHtml(caption)}</figcaption>` : ''}</figure>`;
+}
+
 async function transformChildren(parent, file) {
   if (!Array.isArray(parent.children)) return;
   const transformed = [];
@@ -135,6 +150,11 @@ async function transformChildren(parent, file) {
 
     if (node.type === 'leafDirective' && node.name === 'figure') {
       transformed.push({ type: 'html', value: await renderFigure(node, file) });
+      continue;
+    }
+
+    if (node.type === 'leafDirective' && node.name === 'video') {
+      transformed.push({ type: 'html', value: renderVideo(node, file) });
       continue;
     }
 

@@ -311,6 +311,9 @@ main { flex: 1; }
 .prose .document-figure img { width: 100%; height: auto; border: 1px solid var(--border-primary); border-radius: var(--radius-medium); }
 .prose .document-figure figcaption { margin-top: .7rem; color: var(--foreground-muted); font-size: .8rem; line-height: 1.5; text-align: center; }
 .prose .diagram-figure img { border: 0; background: var(--surface); padding: 1.5rem; }
+.prose .video-figure { border: 1px solid var(--border-primary); border-radius: var(--radius-medium); background: var(--surface); padding: clamp(.8rem, 4vw, 2rem); }
+.prose .video-figure video { display: block; width: min(100%, var(--video-width)); height: auto; aspect-ratio: var(--video-ratio); margin: 0 auto; border-radius: var(--radius-small); background: #000; }
+.prose .video-figure figcaption { margin-top: 1rem; }
 .prose .callout { margin: 1.8rem 0; border: 1px solid var(--border-primary); border-left: 3px solid var(--accent); border-radius: var(--radius-small); background: var(--accent-soft); padding: 1rem 1.2rem; font-size: .92rem; }
 .prose .callout > :first-child { margin-top: 0; }
 .prose .callout > :last-child { margin-bottom: 0; }
